@@ -26,8 +26,11 @@ export default defineConfig(({ command }) => ({
         background_color: "#08090d",
         display: "standalone",
         orientation: "portrait",
-        start_url: ".",
-        scope: ".",
+        // Explicito de proposito: com "." o Chrome resolve pelo endereco do
+        // manifest, o que funciona mas ja deu problema em versoes antigas
+        // do Android. Caminho absoluto nao deixa margem.
+        start_url: CAMINHO_PAGES,
+        scope: CAMINHO_PAGES,
         icons: [
           { src: "icone-192.png", sizes: "192x192", type: "image/png" },
           { src: "icone-512.png", sizes: "512x512", type: "image/png" },
