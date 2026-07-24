@@ -439,6 +439,179 @@ body {
   text-align: center;
 }
 
+/* ---------- controle por voz ---------- */
+
+.voz {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--borda);
+  background: var(--superficie);
+}
+
+.voz-sem-suporte {
+  color: var(--texto-fraco);
+  font-size: 13px;
+}
+
+.voz-sem-suporte p {
+  margin: 0;
+}
+
+.voz-linha {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.voz-mic {
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid var(--borda);
+  background: #0c0e14;
+  color: var(--texto-fraco);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: color 160ms ease, background 160ms ease, box-shadow 200ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.voz-mic:active {
+  transform: scale(0.96);
+}
+
+/* Ouvindo: o microfone acende na cor atual e pulsa, como um assistente
+   escutando. E a unica confirmacao de que o app esta com o ouvido aberto. */
+.voz-mic-ativo {
+  color: #08090d;
+  background: var(--cor-atual);
+  border-color: transparent;
+  animation: voz-pulso 1.6s ease-in-out infinite;
+}
+
+@keyframes voz-pulso {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--cor-atual) 60%, transparent);
+  }
+  50% {
+    box-shadow: 0 0 0 10px color-mix(in srgb, var(--cor-atual) 0%, transparent);
+  }
+}
+
+.voz-estado {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.voz-rotulo {
+  font-size: 13px;
+  color: var(--texto);
+}
+
+.voz-texto {
+  font-size: 12px;
+  color: var(--texto-fraco);
+  min-height: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.voz-feedback {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--cor-atual);
+  animation: voz-surge 240ms ease;
+}
+
+.voz-feedback-erro {
+  color: #f0a05a;
+}
+
+@keyframes voz-surge {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.voz-erro {
+  margin: 0;
+  font-size: 12px;
+  color: #ef7a7a;
+}
+
+.voz-ajustes {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--borda);
+}
+
+.voz-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--texto-fraco);
+}
+
+.voz-campo input {
+  background: #0c0e14;
+  border: 1px solid var(--borda);
+  border-radius: 8px;
+  color: var(--texto);
+  font: inherit;
+  padding: 8px 10px;
+}
+
+.voz-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--texto);
+  cursor: pointer;
+}
+
+.voz-check input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--cor-atual);
+}
+
+.voz-dica,
+.voz-dica-campo {
+  margin: 0;
+  font-size: 12px;
+  color: var(--texto-fraco);
+  line-height: 1.5;
+}
+
+.voz-dica b {
+  color: var(--texto);
+  font-weight: 600;
+}
+
+.voz-dica-cores {
+  opacity: 0.75;
+}
+
 /* ---------- rodape ---------- */
 
 .rodape {

@@ -8,7 +8,7 @@ App próprio para controlar uma fita LED Bluetooth pelo celular ou pelo computad
 cd app
 npm install
 npm run dev      # abre em http://localhost:5173
-npm test         # 32 testes
+npm test         # 67 testes
 npm run checar   # typecheck
 ```
 
@@ -43,6 +43,34 @@ Com vários selecionados, o botão de energia funciona como chave mestra (se alg
 
 **Protocolo desconhecido.** Ao conectar um aparelho que nenhum driver reconhece, o app não falha calado: mostra os serviços e características que encontrou, com as propriedades de cada uma. É a matéria-prima para escrever um driver novo, sem precisar do computador.
 
+## Voz
+
+O botão de microfone liga a escuta por voz, com uma gramática que imita a de Alexa e Google Home em português. Os comandos agem sobre **os aparelhos selecionados**, do mesmo jeito que os controles de baixo.
+
+```
+ligar a luz        / acender / ligue tudo
+desligar           / apaga a luz
+cor azul           / vermelho, verde, branco quente, azul escuro, roxo, ...
+brilho em 50 por cento   / brilho máximo / brilho mínimo
+aumenta o brilho   / diminui a luz / mais claro / mais escuro
+cena 3             / ativa a cena dois
+```
+
+**Palavra de ativação.** Em branco (padrão), toda fala vira comando enquanto o microfone estiver ligado. Preenchida em `ajustes`, o app só reage depois de ouvir a palavra, como num assistente de casa: *"casa, cor azul"*. Um vocativo comum na frente (*"alexa"*, *"ok google"*, *"assistente"*) é sempre ignorado, então a frase no estilo dos assistentes funciona de qualquer jeito.
+
+**Confirmação em voz.** Ligada por padrão, o app responde a ação em voz alta (*"Ligado"*, *"Cor azul"*, *"Brilho 50%"*) usando a síntese do navegador.
+
+Onde mora a lógica:
+
+```
+src/nucleo/comandoVoz.ts        interpreta a transcrição em intenção (puro, testado)
+src/transporte/reconhecimentoVoz.ts   Web Speech API isolada, escuta contínua
+src/nucleo/useVoz.ts            cola: reconhecimento → parser → ação + confirmação
+src/componentes/BotaoVoz.tsx    microfone, texto ouvido, feedback e ajustes
+```
+
+Uma ressalva honesta: o reconhecimento usa o motor do navegador, e **no Chrome o áudio é processado nos servidores do Google**. O app não grava nada e não pede conta nem chave, mas essa parte não é local como o resto. Por isso a escuta vem **desligada** e só liga quando você toca no microfone. Todo o controle da fita continua acontecendo direto entre o navegador e o Bluetooth, sem nuvem.
+
 Aqui esbarra um limite do Web Bluetooth que vale saber: o navegador **só dá acesso a serviços declarados antes de conectar**. Não existe "liste tudo que esse aparelho expõe", como o `dump.py` faz. A lista de serviços sondados está em `SERVICOS_SONDAGEM`, em `src/protocolo/registro.ts`. Se um aparelho novo não aparecer com nenhum serviço, ele usa um UUID fora dessa lista, e descobrir qual exige uma passada pelo `tools/dump.py`, uma única vez.
 
 ## Três coisas que custaram caro
@@ -60,9 +88,9 @@ tools/          ferramentas Python de descoberta (scan, dump, sniff, probe)
 descobertas/    protocolo.json e mapas GATT capturados
 app/
   src/protocolo/    drivers puros: recebem intenção, devolvem bytes
-  src/transporte/   Web Bluetooth real e transporte falso para teste
-  src/nucleo/       fila de envio, controlador, cores, persistência
-  src/componentes/  roda de cor, cenas
+  src/transporte/   Web Bluetooth real, reconhecimento de voz, transporte falso
+  src/nucleo/       fila de envio, controlador, cores, voz, persistência
+  src/componentes/  roda de cor, cenas, microfone de voz
 ```
 
 A separação entre `protocolo` (o que mandar) e `transporte` (como mandar) é o que permite testar o app inteiro sem hardware. Para suportar outra fita, basta um arquivo novo em `protocolo/`.

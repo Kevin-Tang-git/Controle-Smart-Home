@@ -1,9 +1,17 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import type { Rgb } from "../protocolo/tipos";
+import { porcento } from "../protocolo/tipos";
 import { TransporteWebBluetooth } from "../transporte/webBluetooth";
 import { GerenciadorAparelhos } from "./aparelhos";
 import { carregar, salvar, type Cena } from "./armazenamento";
+import { descrever, type ComandoVoz } from "./comandoVoz";
 import type { EstadoFita } from "./controlador";
+
+/** Resultado de um comando de voz, ja pronto para virar toast e fala. */
+export interface ResultadoComando {
+  ok: boolean;
+  texto: string;
+}
 
 /**
  * Cola entre a interface e o nucleo.
@@ -68,6 +76,46 @@ export function useAparelhos() {
     [estado],
   );
 
+  // Ponte entre a intencao reconhecida na voz e as acoes do gerenciador. Fica
+  // aqui, perto da logica do app, porque precisa da selecao atual e das cenas.
+  const executarComando = useCallback(
+    (c: ComandoVoz): ResultadoComando => {
+      if (c.tipo === "desconhecido") return { ok: false, texto: descrever(c) };
+
+      const temAlvo = gerenciador.selecionados.some((a) => a.controlador);
+      if (!temAlvo) return { ok: false, texto: "Nenhum aparelho selecionado" };
+
+      switch (c.tipo) {
+        case "ligar":
+          gerenciador.ligar();
+          break;
+        case "desligar":
+          gerenciador.desligar();
+          break;
+        case "alternar":
+          gerenciador.alternarEnergia();
+          break;
+        case "cor":
+          gerenciador.definirCor(c.cor);
+          break;
+        case "brilho":
+          gerenciador.definirBrilho(c.valor);
+          break;
+        case "brilhoRelativo":
+          gerenciador.definirBrilho(porcento(gerenciador.estado.brilho + c.delta));
+          break;
+        case "cena": {
+          const cena = cenas[c.indice - 1];
+          if (!cena) return { ok: false, texto: `Cena ${c.indice} nao existe` };
+          aplicarCena(cena);
+          break;
+        }
+      }
+      return { ok: true, texto: descrever(c) };
+    },
+    [gerenciador, cenas, aplicarCena],
+  );
+
   return {
     lista,
     estado,
@@ -89,5 +137,6 @@ export function useAparelhos() {
     definirBrilho: (v: number) => gerenciador.definirBrilho(v),
     aplicarCena,
     gravarCena,
+    executarComando,
   };
 }

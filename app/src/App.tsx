@@ -1,9 +1,11 @@
+import { BotaoVoz } from "./componentes/BotaoVoz";
 import { Cenas } from "./componentes/Cenas";
 import { FaixaAparelhos } from "./componentes/FaixaAparelhos";
 import { RodaDeCor } from "./componentes/RodaDeCor";
 import type { Aparelho } from "./nucleo/aparelhos";
 import { rgbParaCss, rgbParaHex } from "./nucleo/cores";
 import { useAparelhos } from "./nucleo/useAparelhos";
+import { useVoz } from "./nucleo/useVoz";
 
 /**
  * Painel de protocolo desconhecido.
@@ -49,6 +51,7 @@ function Desconhecido({ aparelho }: { aparelho: Aparelho }) {
 
 export default function App() {
   const app = useAparelhos();
+  const voz = useVoz(app.executarComando);
   const { estado } = app;
   const semAlvo = app.comandaveis === 0;
   const desconhecidos = app.lista.filter((a) => a.conexao === "desconhecido");
@@ -91,6 +94,8 @@ export default function App() {
       {desconhecidos.map((a) => (
         <Desconhecido key={a.id} aparelho={a} />
       ))}
+
+      <BotaoVoz voz={voz} />
 
       <div className={`controles${semAlvo ? " controles-inertes" : ""}`}>
         <button

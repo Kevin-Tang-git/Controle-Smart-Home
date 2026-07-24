@@ -139,6 +139,18 @@ export class GerenciadorAparelhos {
     this.avisar();
   }
 
+  /** Liga tudo que estiver selecionado. Idempotente, para servir a voz. */
+  ligar(): void {
+    this.comandaveis.forEach((a) => a.controlador!.ligar());
+    this.avisar();
+  }
+
+  /** Desliga tudo que estiver selecionado. Idempotente, para servir a voz. */
+  desligar(): void {
+    this.comandaveis.forEach((a) => a.controlador!.desligar());
+    this.avisar();
+  }
+
   definirCor(cor: Rgb): void {
     this.comandaveis.forEach((a) => a.controlador!.definirCor(cor));
     this.avisar();
