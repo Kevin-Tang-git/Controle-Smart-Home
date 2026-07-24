@@ -88,7 +88,7 @@ export const CORES_NOMEADAS: CorNomeada[] = [
   { nome: "laranja", rgb: { r: 255, g: 110, b: 0 }, apelidos: ["laranja"] },
   { nome: "amarelo", rgb: { r: 255, g: 220, b: 0 }, apelidos: ["amarelo", "amarela"] },
   { nome: "verde limao", rgb: { r: 160, g: 255, b: 0 }, apelidos: ["verde limao", "limao"] },
-  { nome: "verde", rgb: { r: 0, g: 255, b: 60 }, apelidos: ["verde"] },
+  { nome: "verde", rgb: { r: 0, g: 255, b: 0 }, apelidos: ["verde"] },
   { nome: "ciano", rgb: { r: 0, g: 200, b: 255 }, apelidos: ["ciano", "turquesa", "azul piscina"] },
   { nome: "azul claro", rgb: { r: 0, g: 150, b: 255 }, apelidos: ["azul claro", "azul bebe"] },
   { nome: "azul escuro", rgb: { r: 0, g: 0, b: 180 }, apelidos: ["azul escuro", "azul marinho", "marinho"] },
