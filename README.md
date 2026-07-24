@@ -33,6 +33,18 @@ cor        7E 00 05 03 RR GG BB 00 EF
 brilho     7E 00 01 PP 00 00 00 00 EF     (PP em decimal, 0 a 100)
 ```
 
+## Vários aparelhos
+
+A faixa no topo lista os aparelhos pareados. Tocar seleciona ou tira da seleção, e os controles agem sobre **o que estiver selecionado**: um aparelho é controle separado, vários é controle simultâneo. Não existe modo especial para nenhum dos dois casos, o que evita a interface ter dois comportamentos para a mesma ação.
+
+Com vários selecionados, o botão de energia funciona como chave mestra (se algum está ligado, o toque desliga todos), e a roda e o brilho mostram o estado do primeiro selecionado.
+
+**Aparelhos simulados.** O botão `+ simulado` cria um aparelho falso que aceita os comandos e reage na tela em vez de por Bluetooth. Serve para testar o controle simultâneo sem ter vários aparelhos. Funciona porque o `ControladorFita` já é otimista por necessidade: o hardware real também nunca responde, então um aparelho simulado se comporta na tela exatamente como um real.
+
+**Protocolo desconhecido.** Ao conectar um aparelho que nenhum driver reconhece, o app não falha calado: mostra os serviços e características que encontrou, com as propriedades de cada uma. É a matéria-prima para escrever um driver novo, sem precisar do computador.
+
+Aqui esbarra um limite do Web Bluetooth que vale saber: o navegador **só dá acesso a serviços declarados antes de conectar**. Não existe "liste tudo que esse aparelho expõe", como o `dump.py` faz. A lista de serviços sondados está em `SERVICOS_SONDAGEM`, em `src/protocolo/registro.ts`. Se um aparelho novo não aparecer com nenhum serviço, ele usa um UUID fora dessa lista, e descobrir qual exige uma passada pelo `tools/dump.py`, uma única vez.
+
 ## Três coisas que custaram caro
 
 **LEDBLE não é ELK-BLEDOM.** As duas famílias usam quadros `7E...EF` e compartilham os comandos de cor e brilho **byte por byte**. Só o comando de energia difere, e a ELK escreve em `FFF3` enquanto a LEDBLE escreve em `FFE1`. Como cor e brilho funcionavam, tudo indicava que a família estava certa. O quadro de ligar mais citado na internet (`7E 00 04 F0 00 01 FF 00 EF`) é da ELK e esta fita o ignora em silêncio.

@@ -1,15 +1,15 @@
 import type { Rgb } from "../protocolo/tipos";
-import { ESTADO_INICIAL, type EstadoFita } from "./controlador";
+import type { AparelhoSalvo } from "./aparelhos";
 
 /**
  * Persistencia local.
  *
- * O controlador da fita e mudo e nunca informa em que estado esta, entao a
+ * Os controladores sao mudos e nunca informam em que estado estao, entao a
  * unica memoria do sistema e esta aqui. Guardar no localStorage e o que faz
- * o app reabrir mostrando a mesma cor que ficou na parede.
+ * o app reabrir mostrando os mesmos aparelhos e as mesmas cores.
  */
 
-const CHAVE = "fita-led/v1";
+const CHAVE = "fita-led/v2";
 
 export interface Cena {
   id: string;
@@ -18,7 +18,7 @@ export interface Cena {
 }
 
 export interface DadosSalvos {
-  estado: EstadoFita;
+  aparelhos: AparelhoSalvo[];
   cenas: Cena[];
 }
 
@@ -35,7 +35,7 @@ export const CENAS_PADRAO: Cena[] = [
 
 function padrao(): DadosSalvos {
   return {
-    estado: { ...ESTADO_INICIAL, cor: { ...ESTADO_INICIAL.cor } },
+    aparelhos: [],
     cenas: CENAS_PADRAO.map((c) => ({ ...c, cor: { ...c.cor } })),
   };
 }
@@ -48,7 +48,7 @@ export function carregar(): DadosSalvos {
     const lido = JSON.parse(cru) as Partial<DadosSalvos>;
     const base = padrao();
     return {
-      estado: { ...base.estado, ...lido.estado },
+      aparelhos: Array.isArray(lido.aparelhos) ? lido.aparelhos : [],
       cenas: Array.isArray(lido.cenas) && lido.cenas.length > 0 ? lido.cenas : base.cenas,
     };
   } catch {

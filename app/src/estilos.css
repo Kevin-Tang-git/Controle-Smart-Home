@@ -61,47 +61,7 @@ body {
   width: 100%;
 }
 
-/* ---------- barra de conexao ---------- */
-
-.barra {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  font-size: 13px;
-}
-
-.selo {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: var(--texto-fraco);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.selo::before {
-  content: "";
-  width: 8px;
-  height: 8px;
-  flex: none;
-  border-radius: 50%;
-  background: #4b5163;
-}
-
-.selo-conectado::before {
-  background: #35d07f;
-  box-shadow: 0 0 10px #35d07f;
-}
-.selo-procurando::before,
-.selo-conectando::before {
-  background: #e8b33a;
-  animation: pulsar 1s ease-in-out infinite;
-}
-.selo-erro::before {
-  background: #ef4444;
-}
+/* ---------- faixa de aparelhos ---------- */
 
 @keyframes pulsar {
   50% {
@@ -114,6 +74,7 @@ body {
   border: none;
   color: var(--texto-fraco);
   font: inherit;
+  font-size: 13px;
   text-decoration: underline;
   cursor: pointer;
   padding: 6px;
@@ -125,18 +86,189 @@ body {
   cursor: default;
 }
 
-.erro {
-  margin: 0;
-  padding: 12px 14px;
-  border-radius: 12px;
-  background: #2a1416;
-  border: 1px solid #5b2226;
-  color: #ffb4b4;
-  font-size: 13px;
+.link-discreto {
+  margin-left: auto;
+  opacity: 0.6;
+}
+
+.aparelhos {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 4px;
+  gap: 8px;
+}
+
+/* Rola na horizontal em vez de espremer os chips quando forem muitos. */
+.aparelhos-faixa {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+
+.chip {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  flex: none;
+  border-radius: 14px;
+  border: 1px solid var(--borda);
+  background: var(--superficie);
+  color: var(--texto);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.chip-corpo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  background: none;
+  border: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  border-radius: 14px;
+}
+
+/* Selecionado: o aparelho recebe os comandos dos controles abaixo. */
+.chip-ativo {
+  border-color: var(--cor-atual);
+  background: color-mix(in srgb, var(--cor-atual) 12%, var(--superficie));
+}
+
+.chip-inerte {
+  opacity: 0.55;
+}
+
+.chip-cor {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.chip-nome {
+  white-space: nowrap;
+  max-width: 12ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.chip-nome-editando {
+  width: 10ch;
+  background: #0c0e14;
+  border: 1px solid var(--borda);
+  border-radius: 6px;
+  color: var(--texto);
+  font: inherit;
+  padding: 2px 6px;
+}
+
+.chip-nota {
+  color: var(--texto-fraco);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.chip-remover {
+  background: none;
+  border: none;
+  border-left: 1px solid var(--borda);
+  color: var(--texto-fraco);
+  font-size: 16px;
+  line-height: 1;
+  padding: 0 10px;
+  cursor: pointer;
+  border-radius: 0 14px 14px 0;
+}
+
+.chip-remover:hover {
+  color: #ef4444;
+}
+
+.chip-adicionar {
+  padding: 9px 14px;
+  color: var(--texto-fraco);
+  border-style: dashed;
+}
+
+.aparelhos-acoes {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 12px;
+}
+
+.aparelhos-conta {
+  color: var(--texto-fraco);
+  font-size: 12px;
+  margin-left: 6px;
+}
+
+/* ---------- controles ---------- */
+
+.controles {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  transition: opacity 200ms ease;
+}
+
+/* Sem nada selecionado nao ha o que comandar: some do caminho sem sumir da
+   tela, para a interface nao pular quando o usuario seleciona algo. */
+.controles-inertes {
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+.dica {
+  margin: 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--texto-fraco);
+}
+
+/* ---------- protocolo desconhecido ---------- */
+
+.desconhecido {
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: #1a1508;
+  border: 1px solid #4a3a10;
+  font-size: 13px;
+  color: #f0d9a0;
+}
+
+.desconhecido h2 {
+  margin: 0 0 6px;
+  font-size: 15px;
+}
+
+.desconhecido p {
+  margin: 0 0 10px;
+  color: #c9b98e;
+}
+
+.desconhecido ul {
+  margin: 0;
+  padding-left: 18px;
+  line-height: 1.7;
+}
+
+.desconhecido code {
+  font-size: 12px;
+  color: #ffe9b8;
+  word-break: break-all;
+}
+
+.desconhecido-vazio {
+  margin: 0;
 }
 
 /* ---------- botao de energia ---------- */

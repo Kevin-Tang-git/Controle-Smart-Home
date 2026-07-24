@@ -15,4 +15,20 @@ export type EstadoConexao =
   | "procurando"
   | "conectando"
   | "conectado"
+  | "desconhecido"
   | "erro";
+
+/**
+ * O que deu para ver de um aparelho cujo protocolo nao foi reconhecido.
+ *
+ * Limitado de proposito ao que o Web Bluetooth permite: so aparecem os
+ * servicos declarados em SERVICOS_SONDAGEM antes de conectar. Serve de
+ * materia-prima para escrever um driver novo.
+ */
+export interface DiagnosticoGatt {
+  nomeDispositivo: string;
+  servicos: {
+    uuid: string;
+    caracteristicas: { uuid: string; propriedades: string[] }[];
+  }[];
+}
