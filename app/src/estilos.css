@@ -1,0 +1,330 @@
+/*
+  Tema escuro fixo, de proposito: e um app de luz, usado no escuro. Uma
+  tela branca na madrugada seria uma pequena crueldade.
+*/
+
+:root {
+  --fundo: #08090d;
+  --superficie: #14161d;
+  --borda: #262a35;
+  --texto: #e8eaf0;
+  --texto-fraco: #868da0;
+  --cor-atual: #ffffff;
+  --brilho-atual: 1;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  overscroll-behavior: none;
+}
+
+.tela {
+  max-width: 460px;
+  margin: 0 auto;
+  padding: 16px 20px calc(28px + env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  min-height: 100dvh;
+  position: relative;
+}
+
+/* Halo da cor atual: confirmacao visual sem olhar para a fita. */
+.tela::before {
+  content: "";
+  position: fixed;
+  inset: -20% 0 auto;
+  height: 55vh;
+  background: radial-gradient(
+    ellipse at 50% 0%,
+    var(--cor-atual) 0%,
+    transparent 65%
+  );
+  opacity: calc(0.16 * var(--brilho-atual));
+  pointer-events: none;
+  transition: opacity 220ms ease, background 220ms ease;
+}
+
+.tela > * {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+/* ---------- barra de conexao ---------- */
+
+.barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.selo {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--texto-fraco);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.selo::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+  background: #4b5163;
+}
+
+.selo-conectado::before {
+  background: #35d07f;
+  box-shadow: 0 0 10px #35d07f;
+}
+.selo-procurando::before,
+.selo-conectando::before {
+  background: #e8b33a;
+  animation: pulsar 1s ease-in-out infinite;
+}
+.selo-erro::before {
+  background: #ef4444;
+}
+
+@keyframes pulsar {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.link {
+  background: none;
+  border: none;
+  color: var(--texto-fraco);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 6px;
+  flex: none;
+}
+
+.link:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.erro {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: #2a1416;
+  border: 1px solid #5b2226;
+  color: #ffb4b4;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+}
+
+/* ---------- botao de energia ---------- */
+
+.energia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 18px;
+  border-radius: 18px;
+  border: 1px solid var(--borda);
+  background: var(--superficie);
+  color: var(--texto-fraco);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 180ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.energia-simbolo {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2.5px solid currentColor;
+  border-top-color: transparent;
+  transform: rotate(-45deg);
+}
+
+.energia-ligada {
+  color: #08090d;
+  background: var(--cor-atual);
+  border-color: transparent;
+  box-shadow: 0 0 34px -6px var(--cor-atual);
+}
+
+.energia:active {
+  transform: scale(0.985);
+}
+
+/* ---------- roda de cor ---------- */
+
+.roda {
+  position: relative;
+  width: min(300px, 78vw);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  touch-action: none;
+  cursor: crosshair;
+  filter: drop-shadow(0 12px 30px rgba(0, 0, 0, 0.5));
+}
+
+.roda canvas {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  display: block;
+}
+
+.roda-marcador {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  margin: -13px 0 0 -13px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  background: var(--cor-atual);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+  pointer-events: none;
+}
+
+/* ---------- brilho ---------- */
+
+.brilho {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.brilho-topo {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--texto-fraco);
+}
+
+.brilho-valor {
+  font-variant-numeric: tabular-nums;
+  color: var(--texto);
+}
+
+.brilho input {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 44px;
+  background: none;
+  cursor: pointer;
+}
+
+.brilho input::-webkit-slider-runnable-track {
+  height: 12px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #1b1e27, var(--cor-atual));
+  border: 1px solid var(--borda);
+}
+
+.brilho input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 28px;
+  height: 28px;
+  margin-top: -9px;
+  border-radius: 50%;
+  background: #fff;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+}
+
+.brilho input::-moz-range-track {
+  height: 12px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, #1b1e27, var(--cor-atual));
+  border: 1px solid var(--borda);
+}
+
+.brilho input::-moz-range-thumb {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #fff;
+  border: none;
+}
+
+/* ---------- cenas ---------- */
+
+.cenas {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+}
+
+.cena {
+  aspect-ratio: 1;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  cursor: pointer;
+  padding: 0;
+  transition: transform 120ms ease, box-shadow 160ms ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.cena:active {
+  transform: scale(0.94);
+}
+
+.cena-gravada {
+  box-shadow: 0 0 0 3px #fff;
+}
+
+.cenas-dica {
+  grid-column: 1 / -1;
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--texto-fraco);
+  text-align: center;
+}
+
+/* ---------- rodape ---------- */
+
+.rodape {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: var(--texto-fraco);
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.aviso {
+  margin: auto;
+  text-align: center;
+  color: var(--texto-fraco);
+}
+
+.aviso h1 {
+  font-size: 20px;
+  color: var(--texto);
+}

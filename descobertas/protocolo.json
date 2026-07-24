@@ -1,0 +1,72 @@
+{
+  "_leia_me": "Resultado da fase 0. Fonte de verdade do app. Cada comando tem um campo 'status': confirmado (visto funcionando na fita) ou hipotese (do catalogo publico, ainda nao validado).",
+  "atualizado_em": "2026-07-23",
+
+  "dispositivo": {
+    "nome_anunciado": "LEDBLE-00-1A5F",
+    "endereco": "AC:C2:01:70:1A:5F",
+    "tipo_fita": "RGB simples (5050, 4 pinos)",
+    "familia": "ledble",
+    "familia_nome": "LEDBLE (familia de quadros 7E...EF, variante FFE1)",
+    "nota_familia": "NAO e ELK-BLEDOM. As duas familias usam quadros 7E...EF, mas a ELK escreve em FFF3 e a LEDBLE em FFE1, e os quadros de ENERGIA sao diferentes entre elas. Cor e brilho sao iguais nas duas, o que faz a confusao durar.",
+    "nota_nome": "O prefixo LEDBLE sugeria a familia Triones, que foi TESTADA E DESCARTADA. O nome anunciado nao e indicador confiavel de protocolo neste mercado."
+  },
+
+  "transporte": {
+    "servico": "0000ffe0-0000-1000-8000-00805f9b34fb",
+    "caracteristica_escrita": "0000ffe1-0000-1000-8000-00805f9b34fb",
+    "propriedades": ["write", "write-without-response", "read", "notify"],
+    "modo_escrita": "write-without-response",
+    "tipo": "modulo serial transparente (estilo JDY-10 / HM-10)",
+    "responde_status": false,
+    "nota_status": "A caracteristica anuncia notify, mas o controlador nunca emite nada. Nenhuma das 6 consultas de status conhecidas obteve resposta. O app precisa manter o estado localmente, sem esperar confirmacao do hardware."
+  },
+
+  "comandos": {
+    "ligar": {
+      "quadro": "7E 00 04 01 00 00 00 00 EF",
+      "status": "confirmado",
+      "evidencia": "ciclo de 4 passos com o modulo comprovadamente vivo: cor vermelha apareceu, desligar apagou, ESTE quadro acendeu de volta, cor verde apareceu em seguida",
+      "origem": "linha LEDBLE da documentacao de sniffing da integracao elkbledom do Home Assistant",
+      "fonte": "https://github.com/dave-code-ruiz/elkbledom/blob/main/sniffing_ble_device.md",
+      "por_que_confiavel": "Na mesma linha LEDBLE dessa fonte, o quadro de desligar (7E 00 04 00 00 00 FF 00 EF) e o de cor (7E 00 05 03 RR GG BB 00 EF) batem BYTE A BYTE com os que esta fita confirmou na pratica, e a caracteristica de escrita FFE1 tambem bate. Tres coincidencias exatas.",
+      "quadros_testados_que_a_fita_IGNORA": [
+        "7E 00 04 F0 00 01 FF 00 EF (o mais citado na internet, mas pertence a familia ELK, que escreve em FFF3)",
+        "7E 00 04 00 00 01 FF 00 EF (deducao por espelho do desligar, errada)"
+      ],
+      "licao": "Este comando ja esteve marcado como confirmado por engano. Em todos os testes da fase 0 ele vinha seguido de um comando de cor, e era a cor que acendia a fita. Comando de energia so pode ser dado como confirmado se for testado ISOLADO, com a fita comprovadamente apagada e o modulo comprovadamente vivo."
+    },
+    "cor": {
+      "quadro": "7E 00 05 03 RR GG BB 00 EF",
+      "campos": { "RR": "vermelho 0-255", "GG": "verde 0-255", "BB": "azul 0-255" },
+      "status": "confirmado",
+      "evidencia": "teste de identidade: a fita parou em amarelo (7E 00 05 03 FF FF 00 00 EF) enquanto os quadros flux_led e LEDnetWF foram ignorados"
+    },
+    "desligar": {
+      "quadro": "7E 00 04 00 00 00 FF 00 EF",
+      "status": "confirmado",
+      "evidencia": "enviado logo apos brilho 100: a fita foi ao brilho maximo e apagou"
+    },
+    "brilho": {
+      "quadro": "7E 00 01 PP 00 00 00 00 EF",
+      "campos": { "PP": "porcentagem 0-100 (decimal, nao 0-255)" },
+      "status": "confirmado",
+      "evidencia": "PP=0x0F (15%) deixou a fita branca bem fraca, PP=0x64 (100%) devolveu o brilho maximo"
+    }
+  },
+
+  "descartados": {
+    "triones": "56 RR GG BB 00 F0 AA / CC 23 33 / CC 24 33, sem nenhuma reacao",
+    "fluxled": "31 RR GG BB 00 F0 0F +csum / 71 23 0F +csum, sem nenhuma reacao",
+    "lednetwf": "quadro de 20 bytes com cabecalho 00 04 80, sem reacao e suspeito de derrubar a conexao"
+  },
+
+  "armadilhas": {
+    "windows_gatt_cache": "O backend WinRT do bleak lanca 'Falha catastrofica' (WinError -2147418113) ao reusar a tabela GATT em cache depois de uma queda. Conectar sempre com use_cached_services=False.",
+    "conectar_pelo_endereco": "Conectar direto pelo endereco falha se o dispositivo nao estiver no cache de anuncios. Varrer primeiro (find_device_by_address) e so entao conectar.",
+    "reanuncio_lento": "Depois que uma sessao BLE encerra, o modulo pode levar mais de um minuto para voltar a anunciar, ou travar de vez. Nesse caso so tirar da tomada resolve.",
+    "uma_conexao_por_vez": "O app original no celular rouba a conexao. Precisa estar fechado, ou o Bluetooth do celular desligado.",
+    "quadro_longo_derruba": "Quadros de 20 bytes (LEDnetWF) derrubaram a conexao. Manter as escritas curtas.",
+    "atraso_pos_conexao": "Escritas disparadas logo apos o connect podem ser descartadas. Esperar ~1s antes do primeiro comando."
+  }
+}

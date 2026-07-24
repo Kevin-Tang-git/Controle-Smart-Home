@@ -1,0 +1,87 @@
+{
+  "quando": "2026-07-23T21:22:56.767497",
+  "endereco": "AC:C2:01:70:1A:5F",
+  "servicos": [
+    {
+      "uuid": "00001800-0000-1000-8000-00805f9b34fb",
+      "descricao": "Generic Access Profile",
+      "caracteristicas": [
+        {
+          "uuid": "00002a00-0000-1000-8000-00805f9b34fb",
+          "handle": 2,
+          "propriedades": [
+            "read"
+          ],
+          "descricao": "Device Name"
+        },
+        {
+          "uuid": "00002a01-0000-1000-8000-00805f9b34fb",
+          "handle": 4,
+          "propriedades": [
+            "read"
+          ],
+          "descricao": "Appearance"
+        }
+      ]
+    },
+    {
+      "uuid": "00001801-0000-1000-8000-00805f9b34fb",
+      "descricao": "Generic Attribute Profile",
+      "caracteristicas": [
+        {
+          "uuid": "00002a05-0000-1000-8000-00805f9b34fb",
+          "handle": 13,
+          "propriedades": [
+            "indicate"
+          ],
+          "descricao": "Service Changed"
+        },
+        {
+          "uuid": "00002b29-0000-1000-8000-00805f9b34fb",
+          "handle": 16,
+          "propriedades": [
+            "write",
+            "read"
+          ],
+          "descricao": "Client Supported Features"
+        },
+        {
+          "uuid": "00002b2a-0000-1000-8000-00805f9b34fb",
+          "handle": 18,
+          "propriedades": [
+            "read"
+          ],
+          "descricao": "Database Hash"
+        },
+        {
+          "uuid": "00002b3a-0000-1000-8000-00805f9b34fb",
+          "handle": 20,
+          "propriedades": [
+            "read"
+          ],
+          "descricao": "Server Supported Features"
+        }
+      ]
+    },
+    {
+      "uuid": "0000ffe0-0000-1000-8000-00805f9b34fb",
+      "descricao": "Vendor specific",
+      "caracteristicas": [
+        {
+          "uuid": "0000ffe1-0000-1000-8000-00805f9b34fb",
+          "handle": 25,
+          "propriedades": [
+            "notify",
+            "write-without-response",
+            "write",
+            "read"
+          ],
+          "descricao": "Vendor specific"
+        }
+      ]
+    }
+  ],
+  "familias_detectadas": [
+    "jdy-serial"
+  ]
+}
